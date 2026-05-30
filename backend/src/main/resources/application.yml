@@ -1,3 +1,4 @@
+spring.config.import: optional:dotenv
 spring:
   application:
     name: cafe-ai-recipes

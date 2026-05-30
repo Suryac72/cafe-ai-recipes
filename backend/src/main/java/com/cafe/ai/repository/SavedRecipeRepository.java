@@ -18,6 +18,16 @@ public interface SavedRecipeRepository extends JpaRepository<SavedRecipe, Long> 
     List<SavedRecipe> findAllByOrderBySavedAtDesc();
 
     /**
+     * Find saved recipes for a specific user ordered by most recently saved first.
+     */
+    List<SavedRecipe> findAllByUserIdOrderBySavedAtDesc(String userId);
+
+    /**
+     * Find a saved recipe by ID that belongs to a specific user.
+     */
+    java.util.Optional<SavedRecipe> findByIdAndUserId(Long id, String userId);
+
+    /**
      * Find saved recipes that used a particular surplus ingredient (partial match).
      */
     List<SavedRecipe> findBySurplusIngredientsContainingIgnoreCase(String ingredient);

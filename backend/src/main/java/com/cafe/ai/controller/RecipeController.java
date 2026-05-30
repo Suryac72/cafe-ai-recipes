@@ -6,6 +6,7 @@ import java.util.Map;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -59,18 +60,21 @@ public class RecipeController {
      * Saves the user's selected recipe to the PostgreSQL database.
      */
     @PostMapping("/save")
-    public ResponseEntity<SavedRecipe> saveRecipe(@RequestBody SaveRecipeRequest request) {
-        SavedRecipe saved = grokRecipeService.saveRecipe(request);
+    public ResponseEntity<SavedRecipe> saveRecipe(@RequestBody SaveRecipeRequest request,
+                                                  Authentication authentication) {
+        Long userId = (Long) authentication.getPrincipal();
+        SavedRecipe saved = grokRecipeService.saveRecipe(request, userId.toString());
         return ResponseEntity.status(HttpStatus.CREATED).body(saved);
     }
 
     /**
      * GET /api/recipes/saved
-     * Retrieves all saved recipes, ordered by most recent.
+     * Retrieves saved recipes for the authenticated user, ordered by most recent.
      */
     @GetMapping("/saved")
-    public ResponseEntity<List<SavedRecipe>> getSavedRecipes() {
-        List<SavedRecipe> recipes = grokRecipeService.getAllSavedRecipes();
+    public ResponseEntity<List<SavedRecipe>> getSavedRecipes(Authentication authentication) {
+        Long userId = (Long) authentication.getPrincipal();
+        List<SavedRecipe> recipes = grokRecipeService.getSavedRecipesForUser(userId.toString());
         return ResponseEntity.ok(recipes);
     }
 
@@ -79,8 +83,10 @@ public class RecipeController {
      * Deletes a saved recipe by ID.
      */
     @DeleteMapping("/saved/{id}")
-    public ResponseEntity<Map<String, String>> deleteRecipe(@PathVariable Long id) {
-        grokRecipeService.deleteRecipe(id);
+    public ResponseEntity<Map<String, String>> deleteRecipe(@PathVariable Long id,
+                                                            Authentication authentication) {
+        Long userId = (Long) authentication.getPrincipal();
+        grokRecipeService.deleteRecipe(id, userId.toString());
         return ResponseEntity.ok(Map.of("message", "Recipe deleted successfully."));
     }
 

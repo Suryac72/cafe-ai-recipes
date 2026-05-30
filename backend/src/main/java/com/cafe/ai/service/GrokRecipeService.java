@@ -245,8 +245,12 @@ public class GrokRecipeService {
      * @param request the recipe data to persist
      * @return the persisted SavedRecipe entity with its generated ID
      */
-    public SavedRecipe saveRecipe(SaveRecipeRequest request) {
-        log.info("Saving recipe: {}", request.getRecipeName());
+    public SavedRecipe saveRecipe(SaveRecipeRequest request, String userId) {
+        if (userId == null || userId.isBlank()) {
+            throw new IllegalArgumentException("User ID must be present when saving a recipe.");
+        }
+
+        log.info("Saving recipe for user {}: {}", userId, request.getRecipeName());
 
         SavedRecipe entity = new SavedRecipe();
         entity.setRecipeName(request.getRecipeName());
@@ -257,9 +261,10 @@ public class GrokRecipeService {
         entity.setSurplusIngredients(request.getSurplusIngredients());
         entity.setEstimatedPrepTime(request.getEstimatedPrepTime());
         entity.setDifficulty(request.getDifficulty());
+        entity.setUserId(userId);
 
         SavedRecipe saved = savedRecipeRepository.save(entity);
-        log.info("Recipe saved with ID: {}", saved.getId());
+        log.info("Recipe saved with ID: {} for user {}", saved.getId(), userId);
 
         return saved;
     }
@@ -269,20 +274,19 @@ public class GrokRecipeService {
     // =========================================================================
 
     /**
-     * Retrieves all saved recipes, ordered by most recent first.
+     * Retrieves saved recipes for a specific user, ordered by most recent first.
      */
-    public List<SavedRecipe> getAllSavedRecipes() {
-        return savedRecipeRepository.findAllByOrderBySavedAtDesc();
+    public List<SavedRecipe> getSavedRecipesForUser(String userId) {
+        return savedRecipeRepository.findAllByUserIdOrderBySavedAtDesc(userId);
     }
 
     /**
-     * Deletes a saved recipe by its ID.
+     * Deletes a saved recipe by its ID and user ownership.
      */
-    public void deleteRecipe(Long id) {
-        if (!savedRecipeRepository.existsById(id)) {
-            throw new RuntimeException("Recipe not found with ID: " + id);
-        }
-        savedRecipeRepository.deleteById(id);
-        log.info("Deleted recipe with ID: {}", id);
+    public void deleteRecipe(Long id, String userId) {
+        SavedRecipe recipe = savedRecipeRepository.findByIdAndUserId(id, userId)
+                .orElseThrow(() -> new RuntimeException("Recipe not found or not owned by user: " + id));
+        savedRecipeRepository.delete(recipe);
+        log.info("Deleted recipe with ID: {} for user {}", id, userId);
     }
 }

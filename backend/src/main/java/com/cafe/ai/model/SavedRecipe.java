@@ -1,9 +1,15 @@
 package com.cafe.ai.model;
 
-import jakarta.persistence.*;
+import java.time.LocalDateTime;
+
 import org.hibernate.annotations.CreationTimestamp;
 
-import java.time.LocalDateTime;
+import jakarta.persistence.Column;
+import jakarta.persistence.Entity;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
+import jakarta.persistence.Id;
+import jakarta.persistence.Table;
 
 /**
  * JPA Entity representing a recipe idea saved by the user.
@@ -44,6 +50,9 @@ public class SavedRecipe {
     @CreationTimestamp
     @Column(updatable = false)
     private LocalDateTime savedAt;
+
+    @Column(length = 255, nullable = true)
+    private String userId; // To associate the recipe with the user who saved it
 
     // --- Constructors ---
 
@@ -129,5 +138,13 @@ public class SavedRecipe {
 
     public void setSavedAt(LocalDateTime savedAt) {
         this.savedAt = savedAt;
+    }
+
+    public String getUserId() {
+        return userId;
+    }
+
+    public void setUserId(String userId) {
+        this.userId = userId;
     }
 }
