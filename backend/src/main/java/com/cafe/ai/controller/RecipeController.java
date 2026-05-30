@@ -29,7 +29,7 @@ import com.cafe.ai.service.GrokRecipeService;
  */
 @RestController
 @RequestMapping("/api/recipes")
-@CrossOrigin(origins = "http://localhost:5173") // Vite dev server default port
+@CrossOrigin(origins = {"http://localhost:5173", "https://cafe-ai-recipes.vercel.app"})
 public class RecipeController {
 
     private final GrokRecipeService grokRecipeService;
