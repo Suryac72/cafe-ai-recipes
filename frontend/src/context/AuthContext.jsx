@@ -11,6 +11,8 @@ export function AuthProvider({ children }) {
   const [token, setToken] = useState(() => localStorage.getItem('cafe_token'));
   const [loading, setLoading] = useState(true);
 
+  const apiBase = import.meta.env.VITE_API_BASE_URL || 'http://localhost:8089';
+
   const logout = useCallback(() => {
     setUser(null);
     setToken(null);
@@ -24,7 +26,7 @@ export function AuthProvider({ children }) {
       return;
     }
 
-    fetch('/api/auth/me', {
+    fetch(`${apiBase}/api/auth/me`, {
       headers: { Authorization: `Bearer ${token}` },
     })
       .then((res) => {
@@ -37,7 +39,7 @@ export function AuthProvider({ children }) {
   }, [token, logout]);
 
   const login = async (googleIdToken) => {
-    const res = await fetch('/api/auth/google', {
+    const res = await fetch(`${apiBase}/api/auth/google`, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ idToken: googleIdToken }),

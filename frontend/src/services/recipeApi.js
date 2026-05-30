@@ -1,4 +1,4 @@
-const API_BASE = '/api/recipes';
+const API_BASE = `${import.meta.env.VITE_API_BASE_URL || 'http://localhost:8089'}/api/recipes`;
 
 function getAuthHeaders() {
   const token = localStorage.getItem('cafe_token');
