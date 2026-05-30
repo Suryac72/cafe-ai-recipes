@@ -13,11 +13,11 @@ RUN mvn clean package -DskipTests
 FROM eclipse-temurin:17-jre-alpine
 WORKDIR /backend
 
-# Copy the built JAR from the build stage
-COPY --from=build /backend/target/*.jar cafe-ai-recipe.jar
+# Copy the built JAR from the build stage and rename to a stable name
+COPY --from=build /backend/target/*.jar app.jar
 
 # Expose the port defined in your application.yml
 EXPOSE 8080
 
 # Run the application
-ENTRYPOINT ["java", "-jar", "cafe-ai-recipes.jar"]
+ENTRYPOINT ["java", "-jar", "app.jar"]
