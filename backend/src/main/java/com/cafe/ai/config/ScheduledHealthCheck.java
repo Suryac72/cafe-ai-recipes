@@ -18,7 +18,7 @@ public class ScheduledHealthCheck {
 
     private final RestTemplate restTemplate;
 
-    @Value("${health.check.url:http://localhost:8080/api/recipes/health}")
+    @Value("${health.check.url:https://cafe-ai-recipes.onrender.com/api/recipes/health}")
     private String healthUrl;
 
     public ScheduledHealthCheck(RestTemplate restTemplate) {

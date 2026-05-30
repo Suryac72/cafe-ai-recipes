@@ -37,5 +37,6 @@ logging:
     com.cafe.ai: DEBUG
 
 
-
-
+health:
+  check:
+    url: ${HEALTH_CHECK_URL:https://cafe-ai-recipes.onrender.com/api/recipes/health}    
