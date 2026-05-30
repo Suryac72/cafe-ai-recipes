@@ -5,7 +5,6 @@ import java.util.Map;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.http.ResponseEntity;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
 
@@ -16,13 +15,13 @@ public class ScheduledHealthCheck {
 
     // Runs every 15 minutes (at minute 0,15,30,45)
     @Scheduled(cron = "0 */15 * * * *")
-    public ResponseEntity<Map<String, Object>> triggerHealthCheck() {
+    public void triggerHealthCheck() {
+
         Map<String, Object> response = Map.of(
                 "status", "UP",
                 "service", "cafe-ai-recipes",
-                "timestamp", Instant.now().toString()
-        );
-        LoggerFactory.getLogger(ScheduledHealthCheck.class).info("Scheduled health check triggered: {}", response);
-        return ResponseEntity.ok(response);
+                "timestamp", Instant.now().toString());
+
+        log.info("Scheduled health check triggered: {}", response);
     }
 }
