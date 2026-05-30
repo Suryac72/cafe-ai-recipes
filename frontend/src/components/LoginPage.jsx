@@ -8,14 +8,17 @@ export default function LoginPage() {
   const { login } = useAuth();
   const navigate = useNavigate();
   const [error, setError] = useState(null);
+  const [isLoading, setIsLoading] = useState(false);
 
   const handleGoogleSuccess = async (credentialResponse) => {
     try {
       setError(null);
+      setIsLoading(true);
       await login(credentialResponse.credential);
       navigate('/');
     } catch (err) {
       setError('Login failed. Please try again.');
+      setIsLoading(false);
     }
   };
 
@@ -40,15 +43,22 @@ export default function LoginPage() {
         </div>
 
         <div className="login-card__google-btn" id="google-login-btn">
-          <GoogleLogin
-            onSuccess={handleGoogleSuccess}
-            onError={handleGoogleError}
-            theme="filled_black"
-            size="large"
-            width="320"
-            text="signin_with"
-            shape="pill"
-          />
+          {isLoading ? (
+            <div className="login-loading">
+              <div className="login-spinner" />
+              <p className="login-loading__text">Signing in...</p>
+            </div>
+          ) : (
+            <GoogleLogin
+              onSuccess={handleGoogleSuccess}
+              onError={handleGoogleError}
+              theme="filled_black"
+              size="large"
+              width="320"
+              text="signin_with"
+              shape="pill"
+            />
+          )}
         </div>
 
         {error && (
