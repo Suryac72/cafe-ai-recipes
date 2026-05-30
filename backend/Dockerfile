@@ -14,7 +14,7 @@ FROM eclipse-temurin:17-jre-alpine
 WORKDIR /backend
 
 # Copy the built JAR from the build stage
-COPY --from=build /backend/target/*.jar app.jar
+COPY --from=build /backend/target/*.jar cafe-ai-recipe.jar
 
 # Expose the port defined in your application.yml
 EXPOSE 8080
